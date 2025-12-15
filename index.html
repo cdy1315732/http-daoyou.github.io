@@ -113,27 +113,25 @@
             content:''; width: 20px; height: 2px; background: #00f2ff;
         }
 
-        /* --- 核心修复：头像区域 --- */
+        /* --- 头像区域 (竖版适配) --- */
         .hero-image {
-            flex: 0 0 350px; /* 预留宽度 */
+            flex: 0 0 350px;
             display: flex;
-            justify-content: center; /* 居中 */
+            justify-content: center;
             align-items: center;
         }
 
         .avatar-frame {
             position: relative;
-            /* 修改1：调整为竖版长方形，适配人像比例 */
+            /* 竖版 3:4 比例，完美适配您的照片 */
             width: 300px;
             height: 400px; 
             border-radius: 16px;
             background: #111;
-            padding: 5px; /* 边框厚度 */
+            padding: 5px;
             box-shadow: 
                 0 0 0 1px rgba(0, 242, 255, 0.3),
                 0 20px 50px rgba(0, 0, 0, 0.6);
-            /* 移除旋转，保持端正 */
-            transform: none; 
             transition: transform 0.3s ease;
         }
 
@@ -147,14 +145,13 @@
         .avatar-frame img {
             width: 100%;
             height: 100%;
-            /* 修改2：保持填充，但顶部对齐 */
             object-fit: cover;
-            object-position: top center; /* 关键：强制显示顶部（人脸），防止切头 */
+            /* 顶部对齐：防止切掉头发和额头 */
+            object-position: top center; 
             border-radius: 12px;
             display: block;
         }
         
-        /* 装饰框 */
         .avatar-frame::after {
             content: '';
             position: absolute;
@@ -163,8 +160,6 @@
             border-radius: 20px;
             z-index: -1;
         }
-
-        /* --- 结束头像区域 --- */
 
         /* 数据卡片 */
         .stats-grid {
@@ -303,7 +298,9 @@
 
             <div class="hero-image">
                 <div class="avatar-frame">
-                    <img src="./me.jpg" alt="常道友" onerror="this.src='https://via.placeholder.com/300x400/111/fff?text=Photo+Error'">
+                    <img src="me.jpg" 
+                         alt="常道友" 
+                         onerror="this.src='图层 0 拷贝.jpg'; this.onerror=null;">
                 </div>
             </div>
         </section>
@@ -355,4 +352,31 @@
             <div class="project-info">
                 <span class="tag">B2C · AIGC · IoT</span>
                 <h3 class="project-name">儿童好坐姿绘本生成系统</h3>
-                <p class="project-desc">结合智能硬件与 AIGC，将抽象“好习惯”实时转化为个性化漫画。创新实施“30万资源包+四宫格切割”策略
+                <p class="project-desc">结合智能硬件与 AIGC，将抽象“好习惯”实时转化为个性化漫画。创新实施“30万资源包+四宫格切割”策略优化成本。</p>
+                <div style="color: #64748b; font-size: 0.85rem;">
+                    <i class="fas fa-check" style="color: #bd34fe; margin-right: 8px;"></i>Doubao 模型微调
+                    <i class="fas fa-check" style="color: #bd34fe; margin-right: 8px; margin-left: 15px;"></i>工程化降本
+                </div>
+            </div>
+            <div class="project-metrics">
+                <div>
+                    <span class="metric-val" style="color: #bd34fe;">64.8%</span>
+                    <span class="metric-lbl">单图成本降低</span>
+                </div>
+                <div style="margin-top: 20px;">
+                    <span class="metric-val">¥57.6w</span>
+                    <span class="metric-lbl">预计年增收</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div style="margin-bottom: 20px;">
+                <a href="#" style="color: #fff; margin: 0 15px; font-size: 1.4rem; transition: 0.3s;" onmouseover="this.style.color='#00f2ff'" onmouseout="this.style.color='#fff'"><i class="fab fa-weixin"></i></a>
+                <a href="mailto:Changdaoyou@163.com" style="color: #fff; margin: 0 15px; font-size: 1.4rem; transition: 0.3s;" onmouseover="this.style.color='#bd34fe'" onmouseout="this.style.color='#fff'"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>© 2025 Chang Daoyou. All Rights Reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
