@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>常道友 | AI产品经理</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* CSS Variables - 完全匹配原项目 */
+    :root {
+      --background: 220 8% 8%;
+      --foreground: 45 10% 90%;
+      --card: 220 6% 12%;
+      --card-foreground: 45 10% 90%;
+      --popover: 220 6% 14%;
+      --popover-foreground: 45 10% 90%;
+      --primary: 38 92% 60%;
+      --primary-foreground: 220 8% 8%;
+      --secondary: 220 5% 18%;
+      --secondary-foreground: 45 10% 85%;
+      --muted: 220 5% 15%;
+      --muted-foreground: 220 8% 50%;
+      --accent: 15 85% 60%;
+      --accent-foreground: 220 8% 8%;
+      --border: 220 5% 20%;
+      --input: 220 5% 15%;
+      --ring: 38 92% 60%;
+      --radius: 8px;
+      --glow-primary: 38 92% 60%;
+      --glow-accent: 15 85% 60%;
+      --glow-purple: 340 70% 55%;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; border-color: hsl(var(--border)); }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans SC', 'Inter', system-ui, sans-serif;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* 滚动条 */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: hsl(var(--background)); }
+    ::-webkit-scrollbar-thumb { background: hsl(var(--primary) / 0.5); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.7); }
+
+    /* 渐变文字 */
+    .gradient-text {
+      background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 50%, hsl(var(--glow-purple)) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* 渐变背景 */
+    .gradient-bg {
+      background: linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--glow-purple) / 0.05) 50%, transparent 100%);
+    }
+
+    /* 发光卡片 */
+    .glow-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      background: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(240 8% 8%) 100%);
+      border: 1px solid hsl(var(--border) / 0.6);
+      box-shadow: 0 1px 2px hsl(0 0% 0% / 0.1), 0 4px 16px hsl(0 0% 0% / 0.15), inset 0 1px 0 hsl(var(--foreground) / 0.03);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glow-card:hover {
+      border-color: hsl(var(--primary) / 0.3);
+      box-shadow: 0 2px 4px hsl(0 0% 0% / 0.1), 0 8px 32px hsl(var(--primary) / 0.08), 0 16px 48px hsl(0 0% 0% / 0.2), inset 0 1px 0 hsl(var(--foreground) / 0.05);
+      transform: translateY(-2px);
+    }
+
+    /* 发光边框 */
+    .glow-border { position: relative; }
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(145deg, hsl(var(--primary) / 0.6) 0%, hsl(var(--accent) / 0.4) 50%, hsl(var(--glow-purple) / 0.6) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .glow-border:hover::before { opacity: 1; }
+
+    /* 毛玻璃 */
+    .glass {
+      backdrop-filter: blur(24px);
+      background: hsl(var(--background) / 0.85);
+      border: 1px solid hsl(var(--border) / 0.4);
+    }
+
+    /* 线条纹理 */
+    .lines-pattern {
+      background-image: linear-gradient(hsl(var(--foreground) / 0.02) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* 点阵纹理 */
+    .dots-pattern {
+      background-image: radial-gradient(circle, hsl(var(--primary) / 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* 容器 */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* 导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 1.5rem 0;
+      transition: all 0.3s ease;
+    }
+    .navbar.scrolled {
+      padding: 0.75rem 0;
+      backdrop-filter: blur(24px);
+      background: hsl(var(--background) / 0.85);
+      border-bottom: 1px solid hsl(var(--border) / 0.4);
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+    .nav-links a {
+      color: hsl(var(--muted-foreground));
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .nav-links a:hover, .nav-links a.active { color: hsl(var(--primary)); font-weight: 600; }
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: hsl(var(--primary));
+    }
+
+    /* Section 通用 */
+    .section { padding: 6rem 0; position: relative; }
+    .section-badge {
+      display: inline-block;
+      padding: 0.375rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+    }
+    .badge-primary {
+      background: hsl(var(--primary) / 0.1);
+      color: hsl(var(--primary));
+      border: 1px solid hsl(var(--primary) / 0.3);
+    }
+    .badge-accent {
+      background: hsl(var(--accent) / 0.1);
+      color: hsl(var(--accent));
+      border: 1px solid hsl(var(--accent) / 0.3);
+    }
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-top: 1.5rem;
+    }
+    .section-desc {
+      color: hsl(var(--muted-foreground));
+      max-width: 42rem;
+      margin: 1rem auto 0;
+    }
+    .text-center { text-align: center; }
+    .mb-16 { margin-bottom: 4rem; }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+    }
+    .hero-bg-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, hsl(var(--primary) / 0.08) 0%, hsl(var(--glow-purple) / 0.05) 50%, transparent 100%);
+    }
+    .hero-bg-pattern {
+      position: absolute;
+      inset: 0;
+      opacity: 0.3;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%234361ee' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      position: relative;
+      z-index: 10;
+    }
+    .hero-text { display: flex; flex-direction: column; gap: 2rem; }
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .hero-tag {
+      padding: 0.25rem 0.75rem;
+      background: hsl(var(--primary) / 0.1);
+      color: hsl(var(--primary));
+      border: 1px solid hsl(var(--primary) / 0.2);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .hero-desc {
+      color: hsl(var(--muted-foreground));
+      font-size: 1.25rem;
+      max-width: 32rem;
+      line-height: 1.8;
+    }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border: none;
+    }
+    .btn-primary:hover {
+      background: hsl(var(--primary) / 0.9);
+      transform: translateX(4px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: hsl(var(--primary));
+      border: 1px solid hsl(var(--primary) / 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-outline::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: hsl(var(--primary));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+      z-index: -1;
+    }
+    .btn-outline:hover { color: hsl(var(--primary-foreground)); }
+    .btn-outline:hover::before { transform: scaleX(1); }
+
+    /* Avatar */
+    .hero-avatar { position: relative; display: flex; justify-content: center; }
+    .avatar-wrapper { position: relative; width: 360px; }
+    .avatar-border-outer {
+      position: absolute;
+      inset: -1rem;
+      border: 1px dashed hsl(var(--primary) / 0.3);
+      border-radius: 8px;
+      animation: rotate 30s linear infinite;
+    }
+    .avatar-border-inner {
+      position: absolute;
+      inset: -0.5rem;
+      border: 1px dashed hsl(var(--accent) / 0.3);
+      border-radius: 8px;
+      animation: rotate 25s linear infinite reverse;
+    }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .avatar-img-wrapper {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 2px solid hsl(var(--primary) / 0.5);
+    }
+    .avatar-img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar-float {
+      position: absolute;
+      padding: 0.75rem;
+      background: hsl(var(--secondary));
+      border-radius: 8px;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+    .avatar-float-1 {
+      right: -1rem;
+      top: 25%;
+      border: 1px solid hsl(var(--primary) / 0.3);
+      animation: float1 4s ease-in-out infinite;
+    }
+    .avatar-float-2 {
+      left: -1rem;
+      bottom: 33%;
+      border: 1px solid hsl(var(--accent) / 0.3);
+      animation: float2 5s ease-in-out infinite;
+    }
+    @keyframes float1 { 0%, 100% { transform: translateY(-10px); } 50% { transform: translateY(10px); } }
+    @keyframes float2 { 0%, 100% { transform: translateY(10px); } 50% { transform: translateY(-10px); } }
+    .avatar-float i { font-size: 1.5rem; }
+    .avatar-float-1 i { color: hsl(var(--primary)); }
+    .avatar-float-2 i { color: hsl(var(--accent)); }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: hsl(var(--muted-foreground));
+    }
+    .scroll-hint span { font-size: 0.75rem; }
+    .scroll-line {
+      width: 2px;
+      height: 2rem;
+      border-radius: 9999px;
+      background: linear-gradient(to bottom, hsl(var(--primary)), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse { 0%, 100% { opacity: 1; transform: translateY(0); } 50% { opacity: 0.5; transform: translateY(10px); } }
+
+    /* About Section */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .about-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .about-icon {
+      width: 4rem;
+      height: 4rem;
+      background: hsl(var(--primary) / 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+    .glow-card:hover .about-icon { background: hsl(var(--primary) / 0.2); }
+    .about-icon i { font-size: 2rem; color: hsl(var(--primary)); }
+    .about-content { flex: 1; }
+    .about-value {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .about-label {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .about-desc {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    /* Cases Section */
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .case-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+    }
+    .case-icon {
+      width: 3rem;
+      height: 3rem;
+      background: hsl(var(--accent) / 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      transition: background 0.3s;
+    }
+    .glow-card:hover .case-icon { background: hsl(var(--accent) / 0.2); }
+    .case-icon i { font-size: 1.5rem; color: hsl(var(--accent)); }
+    .case-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .case-desc {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+    .case-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+    .case-tag {
+      padding: 0.125rem 0.625rem;
+      background: hsl(var(--secondary));
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      color: hsl(var(--secondary-foreground));
+    }
+    .case-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: hsl(var(--primary));
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.3s;
+    }
+    .case-link:hover { color: hsl(var(--primary) / 0.8); }
+
+    /* Knowledge Section */
+    .knowledge-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .knowledge-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+    }
+    .knowledge-icon {
+      width: 3rem;
+      height: 3rem;
+      background: hsl(var(--primary) / 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      transition: background 0.3s;
+    }
+    .glow-card:hover .knowledge-icon { background: hsl(var(--primary) / 0.2); }
+    .knowledge-icon i { font-size: 1.5rem; color: hsl(var(--primary)); }
+    .knowledge-meta {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 0.5rem;
+    }
+    .knowledge-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      transition: color 0.3s;
+    }
+    .glow-card:hover .knowledge-title { color: hsl(var(--primary)); }
+    .knowledge-desc {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      line-height: 1.6;
+      flex: 1;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .knowledge-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: hsl(var(--primary));
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    .knowledge-link i { transition: transform 0.3s; }
+    .glow-card:hover .knowledge-link i { transform: translate(2px, -2px); }
+
+    /* Experience Section */
+    .timeline {
+      position: relative;
+      max-width: 56rem;
+      margin: 0 auto;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 2rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--glow-purple)));
+    }
+    .timeline-item {
+      position: relative;
+      padding-left: 6rem;
+      margin-bottom: 3rem;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: calc(2rem - 8px);
+      top: 1.5rem;
+      width: 1rem;
+      height: 1rem;
+      background: hsl(var(--primary));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .timeline-dot::after {
+      content: '';
+      width: 0.5rem;
+      height: 0.5rem;
+      background: hsl(var(--primary-foreground));
+      border-radius: 50%;
+    }
+    .exp-card { padding: 1.5rem; }
+    .exp-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .exp-icon {
+      width: 3rem;
+      height: 3rem;
+      background: hsl(var(--primary) / 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .exp-icon i { font-size: 1.5rem; color: hsl(var(--primary)); }
+    .exp-icon.accent { background: hsl(var(--accent) / 0.1); }
+    .exp-icon.accent i { color: hsl(var(--accent)); }
+    .exp-icon.purple { background: hsl(var(--glow-purple) / 0.1); }
+    .exp-icon.purple i { color: hsl(var(--glow-purple)); }
+    .exp-company {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+    .exp-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+    .exp-position {
+      color: hsl(var(--primary));
+      font-weight: 500;
+    }
+    .exp-period, .exp-location {
+      color: hsl(var(--muted-foreground));
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .exp-resp {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+    .exp-resp strong { color: hsl(var(--foreground) / 0.8); font-weight: 500; }
+    .exp-achievements { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .exp-achievement {
+      padding: 0.25rem 0.75rem;
+      background: hsl(var(--accent) / 0.1);
+      color: hsl(var(--accent));
+      border-radius: 9999px;
+      font-size: 0.75rem;
+    }
+
+    /* Projects Section */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      max-width: 64rem;
+      margin: 0 auto;
+    }
+    .project-card { padding: 0; overflow: hidden; }
+    .project-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid hsl(var(--border) / 0.5);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .project-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      background: hsl(var(--primary) / 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .project-icon i { font-size: 1.75rem; color: hsl(var(--primary)); }
+    .project-icon.accent { background: hsl(var(--accent) / 0.1); }
+    .project-icon.accent i { color: hsl(var(--accent)); }
+    .project-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .project-company {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+    }
+    .project-body { padding: 1.5rem; }
+    .project-section { margin-bottom: 1.5rem; }
+    .project-section:last-child { margin-bottom: 0; }
+    .project-section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .project-section-title::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: hsl(var(--accent));
+      border-radius: 50%;
+    }
+    .project-section-title.primary::before { background: hsl(var(--primary)); }
+    .project-section-title i { color: hsl(var(--accent)); }
+    .project-text {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+    .project-text strong { color: hsl(var(--foreground) / 0.8); font-weight: 500; }
+    .project-list {
+      list-style: none;
+    }
+    .project-list li {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      line-height: 1.7;
+      padding-left: 0.75rem;
+      position: relative;
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 0.75rem;
+    }
+    .project-list li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: hsl(var(--primary) / 0.5);
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 0.5rem;
+    }
+    .project-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .metric {
+      text-align: center;
+      padding: 1rem;
+      background: hsl(var(--secondary) / 0.5);
+      border-radius: 12px;
+    }
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .metric-label {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+      margin-top: 0.25rem;
+    }
+
+    /* Contact Section */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      max-width: 56rem;
+      margin: 0 auto 3rem;
+    }
+    .contact-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem 1.5rem;
+      background: hsl(var(--secondary) / 0.4);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .contact-item:hover {
+      background: hsl(var(--secondary) / 0.6);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    }
+    .contact-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .contact-icon {
+      width: 3rem;
+      height: 3rem;
+      background: hsl(var(--primary) / 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    .contact-item:hover .contact-icon { background: hsl(var(--primary) / 0.2); }
+    .contact-icon i { font-size: 1.25rem; color: hsl(var(--primary)); }
+    .contact-label {
+      font-size: 0.75rem;
+      color: hsl(var(--muted-foreground));
+    }
+    .contact-value {
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .contact-item:hover .contact-value { color: hsl(var(--primary)); }
+    .contact-arrow {
+      color: hsl(var(--muted-foreground));
+      transition: color 0.3s;
+    }
+    .contact-item:hover .contact-arrow { color: hsl(var(--primary)); }
+    .contact-cta {
+      text-align: center;
+      font-size: 1.125rem;
+      color: hsl(var(--muted-foreground));
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid hsl(var(--border) / 0.5);
+      padding: 2rem 0;
+    }
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+      color: hsl(var(--muted-foreground));
+    }
+    .footer-heart { color: hsl(var(--accent)); }
+
+    /* 响应式 */
+    @media (max-width: 1024px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-avatar { display: none; }
+      .hero-tags { justify-content: center; }
+      .hero-buttons { justify-content: center; }
+      .hero-desc { margin: 0 auto; }
+      .about-grid { grid-template-columns: 1fr; }
+      .cases-grid { grid-template-columns: repeat(2, 1fr); }
+      .knowledge-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero-title { font-size: 2.5rem; }
+      .section-title { font-size: 1.75rem; }
+      .cases-grid, .knowledge-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-content { flex-direction: column; gap: 1rem; }
+      .timeline::before { left: 1rem; }
+      .timeline-item { padding-left: 3.5rem; }
+      .timeline-dot { left: calc(1rem - 8px); }
+      .project-metrics { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+<body>
+  <!-- 导航栏 -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="#hero" class="logo gradient-text">Chang · AI</a>
+      <div class="nav-links">
+        <a href="#hero" class="active">首页</a>
+        <a href="#about">关于我</a>
+        <a href="#cases">智能Agent案例</a>
+        <a href="#knowledge">个人知识</a>
+        <a href="#experience">工作经历</a>
+        <a href="#projects">项目经历</a>
+        <a href="#contact">联系方式</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-bg-gradient"></div>
+      <div class="hero-bg-pattern"></div>
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="section-badge badge-primary">AI 产品经理</span>
+          <h1 class="hero-title gradient-text">常道友</h1>
+          <div class="hero-tags">
+            <span class="hero-tag">从0到1 AI产品搭建</span>
+            <span class="hero-tag">AIGC技术转化</span>
+            <span class="hero-tag">全栈AI认知</span>
+            <span class="hero-tag">体验设计赋能</span>
+          </div>
+          <p class="hero-desc">
+            6年互联网产品设计经验，1.5年AI产品实战。<br>
+            专注将AI技术转化为用户价值，打造有温度的智能产品。
+          </p>
+          <div class="hero-buttons">
+            <a href="#contact" class="btn btn-primary">联系合作 <i class="fas fa-arrow-right"></i></a>
+            <a href="#cases" class="btn btn-outline">查看案例</a>
+          </div>
+        </div>
+        <div class="hero-avatar">
+          <div class="avatar-wrapper">
+            <div class="avatar-border-outer"></div>
+            <div class="avatar-border-inner"></div>
+            <div class="avatar-img-wrapper">
+              <img src="avatar.jpg" alt="常道友" class="avatar-img">
+            </div>
+            <div class="avatar-float avatar-float-1"><i class="fas fa-robot"></i></div>
+            <div class="avatar-float avatar-float-2"><i class="fas fa-sparkles"></i></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>向下滚动</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section" id="about">
+    <div class="dots-pattern" style="position:absolute;inset:0;opacity:0.5;"></div>
+    <div class="container" style="position:relative;z-index:10;">
+      <div class="text-center mb-16">
+        <span class="section-badge badge-primary">关于我</span>
+        <h2 class="section-title gradient-text">核心优势</h2>
+        <p class="section-desc">结合深厚的产品设计背景与前沿AI技术认知，致力于创造真正解决问题的智能产品</p>
+      </div>
+      <div class="about-grid">
+        <div class="glow-card glow-border about-card">
+          <div class="about-icon"><i class="fas fa-calendar-alt"></i></div>
+          <div class="about-content">
+            <div class="about-value gradient-text">6年</div>
+            <div class="about-label">互联网产品经验</div>
+            <p class="about-desc">深耕 B2B/B2C 双赛道产品领域，积累从 0 到 1 搭建、商业化落地的全链路设计与管理经验</p>
+          </div>
+        </div>
+        <div class="glow-card glow-border about-card">
+          <div class="about-icon"><i class="fas fa-bolt"></i></div>
+          <div class="about-content">
+            <div class="about-value gradient-text">1.5年</div>
+            <div class="about-label">AI 产品实战经验</div>
+            <p class="about-desc">聚焦 AI 技术商业化落地，主导 B 端合同风控、C 端儿童教育等场景 AI 产品，实现技术价值向业务收益转化</p>
+          </div>
+        </div>
+        <div class="glow-card glow-border about-card">
+          <div class="about-icon"><i class="fas fa-sync-alt"></i></div>
+          <div class="about-content">
+            <div class="about-value gradient-text">全链路</div>
+            <div class="about-label">产品操盘闭环能力</div>
+            <p class="about-desc">从底层模型选型→评测体系搭建→需求定义→跨团队协同→数据迭代全流程把控，避免技术与业务脱节</p>
+          </div>
+        </div>
+        <div class="glow-card glow-border about-card">
+          <div class="about-icon"><i class="fas fa-palette"></i></div>
+          <div class="about-content">
+            <div class="about-value gradient-text">体验设计</div>
+            <div class="about-label">赋能 AI 产品优势</div>
+            <p class="about-desc">融合产品逻辑与 UX 设计能力，把模糊的 AI 技术能力转化为用户可感知的优质体验，打破 AI 产品难用壁垒</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cases Section -->
+  <section class="section" id="cases">
+    <div class="lines-pattern" style="position:absolute;inset:0;"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom, hsl(var(--background)), transparent, hsl(var(--background)));"></div>
+    <div class="container" style="position:relative;z-index:10;">
+      <div class="text-center mb-16">
+        <span class="section-badge badge-accent">智能Agent案例</span>
+        <h2 class="section-title gradient-text">AI产品实践</h2>
+        <p class="section-desc">从构思到落地，每一个智能Agent都是对AI技术商业化落地的深度探索</p>
+      </div>
+      <div class="cases-grid">
+        <div class="glow-card glow-border case-card">
+          <div class="case-icon"><i class="fas fa-book-open"></i></div>
+          <h3 class="case-title">儿童好坐姿绘本生成</h3>
+          <p class="case-desc">基于儿童行为引导与健康习惯养成需求，面向 3-12 岁儿童设计的错误坐姿矫正主题儿童绘本智能生成方案。</p>
+          <div class="case-tags">
+            <span class="case-tag">AIGC</span>
+            <span class="case-tag">教育</span>
+            <span class="case-tag">图像生成</span>
+          </div>
+          <a href="https://www.coze.cn/store/agent/7581865917240393778?bot_id=true" target="_blank" class="case-link">了解详情 <i class="fas fa-external-link-alt"></i></a>
+        </div>
+        <div class="glow-card glow-border case-card">
+          <div class="case-icon"><i class="fas fa-baby"></i></div>
+          <h3 class="case-title">儿童陪伴系统</h3>
+          <p class="case-desc">儿童陪伴系统以温柔耐心的方式陪伴孩子学习，启发思考，循序引导解题，鼓励努力，助力成长。</p>
+          <div class="case-tags">
+            <span class="case-tag">LLM</span>
+            <span class="case-tag">儿童</span>
+            <span class="case-tag">陪伴</span>
+          </div>
+          <span class="case-link">开始对话 <i class="fas fa-comment"></i></span>
+        </div>
+        <div class="glow-card glow-border case-card">
+          <div class="case-icon"><i class="fas fa-users"></i></div>
+          <h3 class="case-title">人事系统</h3>
+          <p class="case-desc">通过人事系统让员工熟悉公司的规章制度。</p>
+          <div class="case-tags">
+            <span class="case-tag">企业</span>
+            <span class="case-tag">自动化</span>
+            <span class="case-tag">HR</span>
+          </div>
+          <span class="case-link">开始对话 <i class="fas fa-comment"></i></span>
+        </div>
+        <div class="glow-card glow-border case-card">
+          <div class="case-icon"><i class="fas fa-file-contract"></i></div>
+          <h3 class="case-title">合同审查系统</h3>
+          <p class="case-desc">合同审查系统专业审阅合同条款，依据用户提示精准分析，提供详细合规意见，助您规避法律风险。</p>
+          <div class="case-tags">
+            <span class="case-tag">法律</span>
+            <span class="case-tag">风控</span>
+            <span class="case-tag">文档</span>
+          </div>
+          <a href="https://www.coze.cn/store/agent/7569543574229401636?bot_id=true" target="_blank" class="case-link">了解详情 <i class="fas fa-external-link-alt"></i></a>
+        </div>
+        <div class="glow-card glow-border case-card">
+          <div class="case-icon"><i class="fas fa-car"></i></div>
+          <h3 class="case-title">汽车安抛识别系统</h3>
+          <p class="case-desc">精准识别汽车是否为安全抛锚范围内。</p>
+          <div class="case-tags">
+            <span class="case-tag">CV</span>
+            <span class="case-tag">安全</span>
+            <span class="case-tag">IoT</span>
+          </div>
+          <span class="case-link">开始对话 <i class="fas fa-comment"></i></span>
+        </div>
+        <div class="glow-card glow-border case-card">
+          <div class="case-icon"><i class="fas fa-utensils"></i></div>
+          <h3 class="case-title">中华食谱大全</h3>
+          <p class="case-desc">这是一款制作中国美食的小助手，可以通过输入想吃的菜品让我为你普及制作菜品的食材和步骤。</p>
+          <div class="case-tags">
+            <span class="case-tag">生活</span>
+            <span class="case-tag">推荐</span>
+            <span class="case-tag">生成</span>
+          </div>
+          <a href="https://www.coze.cn/store/agent/7565818429207609398?bot_id=true" target="_blank" class="case-link">了解详情 <i class="fas fa-external-link-alt"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Knowledge Section -->
+  <section class="section" id="knowledge">
+    <div class="gradient-bg" style="position:absolute;inset:0;opacity:0.5;"></div>
+    <div class="container" style="position:relative;z-index:10;">
+      <div class="text-center mb-16">
+        <span class="section-badge badge-primary">个人知识</span>
+        <h2 class="section-title gradient-text">思考与沉淀</h2>
+        <p class="section-desc">在AI产品实践中的技术理解与方法论总结</p>
+      </div>
+      <div class="knowledge-grid">
+        <a href="https://www.woshipm.com/ai/6294254.html" target="_blank" class="glow-card glow-border knowledge-card" style="text-decoration:none;color:inherit;">
+          <div class="knowledge-icon"><i class="fas fa-brain"></i></div>
+          <div class="knowledge-meta">2025年 · 15分钟阅读</div>
+          <h3 class="knowledge-title">LLM背后的模型训练原理是什么？</h3>
+          <p class="knowledge-desc">深入浅出解析大语言模型的训练过程，从数据预处理到模型微调，理解AI的核心机制</p>
+          <span class="knowledge-link">了解详情 <i class="fas fa-arrow-up-right-from-square"></i></span>
+        </a>
+        <a href="https://www.woshipm.com/ai/6301599.html" target="_blank" class="glow-card glow-border knowledge-card" style="text-decoration:none;color:inherit;">
+          <div class="knowledge-icon"><i class="fas fa-file-contract"></i></div>
+          <div class="knowledge-meta">2025年 · 12分钟阅读</div>
+          <h3 class="knowledge-title">AI 合同审查革命</h3>
+          <p class="knowledge-desc">AI如何重塑法律文档审查流程，提升效率与准确性的产品实践</p>
+          <span class="knowledge-link">了解详情 <i class="fas fa-arrow-up-right-from-square"></i></span>
+        </a>
+        <div class="glow-card glow-border knowledge-card">
+          <div class="knowledge-icon"><i class="fas fa-baby"></i></div>
+          <div class="knowledge-meta">2025年 · 10分钟阅读</div>
+          <h3 class="knowledge-title">智能儿童坐姿矫正</h3>
+          <p class="knowledge-desc">基于AI视觉技术的儿童健康习惯养成方案，从产品构思到落地的完整复盘</p>
+          <span class="knowledge-link" style="color:hsl(var(--muted-foreground));">即将发布</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

@@ -1,0 +1,4 @@
+project_id = "ffhkbujitovskbdtyxwe"
+
+[functions.coze-chat]
+verify_jwt = false
